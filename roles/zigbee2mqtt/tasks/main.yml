@@ -1,0 +1,59 @@
+
+- name: Create docker network
+  docker_network:
+    name: zigbee_network
+    state: present
+
+- name: Ensure mosquitto config directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ zigbee2mqtt_config_dir }}"
+    - "{{ zigbee2mqtt_mosquitto_config_dir }}/config"
+    - "{{ zigbee2mqtt_mosquitto_config_dir }}/data"
+    - "{{ zigbee2mqtt_mosquitto_config_dir }}/log"
+
+- name: Copy Mosquitto configuration
+  copy:
+    src: mosquitto.conf
+    dest: "{{ zigbee2mqtt_mosquitto_config_dir }}/config/mosquitto.conf"
+    mode: "0644"
+
+# - name: Copy Zigbee2MQTT configuration
+#   copy:
+#     src: configuration.yaml
+#     dest: "{{ zigbee2mqtt_config_dir }}/configuration.yaml"
+#     mode: "0644"
+
+- name: Start MQTT Broker
+  docker_container:
+    name: mqtt
+    hostname: mqtt
+    image: eclipse-mosquitto:{{ zigbee2mqtt_mosquitto_version }}
+    restart_policy: always
+    networks:
+      - name: zigbee_network
+    volumes:
+      - "{{ zigbee2mqtt_mosquitto_config_dir }}/config:/mosquitto/config"
+      - "{{ zigbee2mqtt_mosquitto_config_dir }}/data:/mosquitto/data"
+      - "{{ zigbee2mqtt_mosquitto_config_dir }}/log:/mosquitto/log"
+    ports:
+      - "127.0.0.1:1883:1883"
+- name: Start Zigbee2MQTT
+  docker_container:
+    name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt:{{ zigbee2mqtt_version }}
+    restart_policy: always
+    networks:
+      - name: zigbee_network
+    devices:
+      - "{{ zigbee2mqtt_adapter }}:/dev/ttyACM0"
+    volumes:
+      - "{{ zigbee2mqtt_config_dir }}:/app/data"
+      - /run/udev:/run/udev:ro
+    ports:
+      - "8080:8080"
+    env:
+      TZ: "{{ zigbee2mqtt_timezone }}" 

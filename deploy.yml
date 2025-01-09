@@ -3,3 +3,6 @@
   - name: Setup Home Assistant
     include_role:
       name: homeassistant
+  - name: Setup Zigbee2MQTT
+    include_role:
+      name: zigbee2mqtt
