@@ -1,0 +1,4 @@
+---
+homeassistant_version: "latest"
+homeassistant_user: homeassistant
+homeassistant_config_dir: "/home/{{ homeassistant_user }}/homeassistant/config"

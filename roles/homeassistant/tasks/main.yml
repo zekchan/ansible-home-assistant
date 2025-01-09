@@ -1,0 +1,24 @@
+- name: create config directory
+  file:
+    path: /home/{{ homeassistant_user }}/homeassistant/config
+    state: directory
+    mode: "0755"
+    owner: "{{ homeassistant_user }}"
+    group: "{{ homeassistant_user }}"
+- name: create home assistant container
+  docker_container:
+    name: home-assistant
+    image: "ghcr.io/home-assistant/home-assistant:{{ homeassistant_version }}"
+    restart_policy: always
+    pull: false
+    network_mode: host
+    stop_timeout: 120
+    removal_wait_timeout: 120
+    volumes:
+      # no use zigbee stick here, now using zigbee2mqtt
+      - "{{ config_dir }}:/config"
+      - /run/dbus:/run/dbus:ro
+      - /etc/localtime:/etc/localtime:ro
+    privileged: true
+    env:
+      TZ: Europe/Lisbon

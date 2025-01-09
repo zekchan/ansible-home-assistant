@@ -1,0 +1,5 @@
+- hosts: home-rp1
+  tasks:
+  - name: Setup Home Assistant
+    include_role:
+      name: homeassistant
