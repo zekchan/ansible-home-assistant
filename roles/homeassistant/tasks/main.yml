@@ -10,6 +10,7 @@
     name: home-assistant
     image: "ghcr.io/home-assistant/home-assistant:{{ homeassistant_version }}"
     restart_policy: always
+    image_name_mismatch: recreate
     pull: false
     network_mode: host
     stop_timeout: 120

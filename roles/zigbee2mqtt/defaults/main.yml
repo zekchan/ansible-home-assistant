@@ -1,8 +1,7 @@
 ---
 zigbee2mqtt_version: "latest"
 zigbee2mqtt_mosquitto_version: "latest"
-zigbee2mqtt_user: "zekchan"
+zigbee2mqtt_user: "zigbee2mqtt"
 zigbee2mqtt_config_dir: "/home/{{ zigbee2mqtt_user }}/homeassistant/zigbee2mqtt/data"
 zigbee2mqtt_mosquitto_config_dir: "/home/{{ zigbee2mqtt_user }}/homeassistant/mosquitto"
 zigbee2mqtt_timezone: "Europe/Lisbon"
-zigbee2mqtt_adapter: "/dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_6a30b08e5c51ef1183fd338ccc32aab1-if00-port0"  # Adjust this to your zigbee adapter path 
